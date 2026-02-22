@@ -1,0 +1,12 @@
+{
+  "name": "croisee",
+  "version": "1.0.0",
+  "description": "Contrôleur de feux de signalisation – croisée à 4 voies",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,0 +1,350 @@
+/* ─── Reset & Base ─────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #1a2a1a;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: #e0e0e0;
+  gap: 24px;
+}
+
+h1 {
+  font-size: 1.4rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #b0d0b0;
+}
+
+/* ─── Intersection Grid ─────────────────────────────────────────────────────── */
+/*
+  3×3 grid:
+  [NW corner] [N road] [NE corner]
+  [W  road  ] [center] [E  road  ]
+  [SW corner] [S road] [SE corner]
+*/
+.intersection {
+  display: grid;
+  grid-template-columns: 180px 220px 180px;
+  grid-template-rows:    180px 220px 180px;
+  width: 580px;
+  height: 580px;
+  box-shadow: 0 0 60px rgba(0,0,0,0.8);
+}
+
+/* ─── Sidewalk corners (grass) ──────────────────────────────────────────────── */
+.corner {
+  background: #3a6b2a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 12px;
+}
+
+/* ─── Road arms ─────────────────────────────────────────────────────────────── */
+.road {
+  background: #2e2e2e;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Center dashes on road arms */
+.road-n, .road-s {
+  flex-direction: column;
+}
+.road-n::before, .road-s::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 100%;
+  background: repeating-linear-gradient(
+    to bottom,
+    #f0d060 0px, #f0d060 14px,
+    transparent 14px, transparent 26px
+  );
+  opacity: 0.5;
+}
+.road-w, .road-e {
+  flex-direction: row;
+}
+.road-w::before, .road-e::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 4px;
+  width: 100%;
+  background: repeating-linear-gradient(
+    to right,
+    #f0d060 0px, #f0d060 14px,
+    transparent 14px, transparent 26px
+  );
+  opacity: 0.5;
+}
+
+/* ─── Center ─────────────────────────────────────────────────────────────────── */
+.center {
+  background: #2e2e2e;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.center::after {
+  content: '';
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 3px solid rgba(240, 208, 96, 0.3);
+}
+
+/* ─── Zebra crossings ────────────────────────────────────────────────────────── */
+.zebra {
+  position: absolute;
+  z-index: 1;
+}
+.road-n .zebra, .road-s .zebra {
+  width: 100%;
+  height: 40px;
+  background: repeating-linear-gradient(
+    to right,
+    rgba(255,255,255,0.85) 0px, rgba(255,255,255,0.85) 14px,
+    transparent 14px, transparent 24px
+  );
+}
+.road-n .zebra { bottom: 0; }
+.road-s .zebra { top: 0; }
+
+.road-w .zebra, .road-e .zebra {
+  height: 100%;
+  width: 40px;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.85) 0px, rgba(255,255,255,0.85) 14px,
+    transparent 14px, transparent 24px
+  );
+}
+.road-w .zebra { right: 0; }
+.road-e .zebra { left: 0; }
+
+/* ─── Traffic lights ─────────────────────────────────────────────────────────── */
+.traffic-light {
+  position: absolute;
+  z-index: 2;
+  background: #111;
+  border: 2px solid #444;
+  border-radius: 8px;
+  padding: 5px;
+  display: flex;
+  gap: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.7);
+}
+
+/* N light: horizontal strip at top of N arm, near intersection */
+.road-n .traffic-light {
+  flex-direction: row;
+  bottom: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+/* S light: bottom of S arm, near intersection */
+.road-s .traffic-light {
+  flex-direction: row;
+  top: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+/* W light: right side of W arm */
+.road-w .traffic-light {
+  flex-direction: column;
+  right: 48px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+/* E light: left side of E arm */
+.road-e .traffic-light {
+  flex-direction: column;
+  left: 48px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.bulb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+.bulb.red.active    { background: #ff3333; box-shadow: 0 0 10px #ff3333, 0 0 20px #ff000088; }
+.bulb.orange.active { background: #ff8800; box-shadow: 0 0 10px #ff8800, 0 0 20px #ff880088; }
+.bulb.green.active  { background: #00dd44; box-shadow: 0 0 10px #00dd44, 0 0 20px #00dd4488; }
+
+/* ─── Pedestrian signals ─────────────────────────────────────────────────────── */
+.ped-signal {
+  position: absolute;
+  z-index: 2;
+  width: 34px;
+  height: 56px;
+  background: #111;
+  border: 2px solid #444;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  padding: 4px 2px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.7);
+}
+
+/* Positioning: opposite side from the traffic light */
+.road-n .ped-signal { bottom: 48px; right: 20px; }
+.road-s .ped-signal { top: 48px;    right: 20px; }
+.road-w .ped-signal { right: 48px;  bottom: 20px; }
+.road-e .ped-signal { left: 48px;   bottom: 20px; }
+
+.ped-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+.ped-icon.stop  { background: #1a1a1a; color: #555; }
+.ped-icon.walk  { background: #1a1a1a; color: #555; }
+
+.ped-icon.stop.active  {
+  background: #cc1111;
+  color: #fff;
+  box-shadow: 0 0 8px #cc111188;
+}
+.ped-icon.walk.active  {
+  background: #00aa33;
+  color: #fff;
+  box-shadow: 0 0 8px #00aa3388;
+}
+
+/* ─── Pedestrian buttons ─────────────────────────────────────────────────────── */
+.ped-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 3px solid #c8a000;
+  background: #f0c000;
+  color: #1a1a00;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(240, 192, 0, 0.5);
+  position: relative;
+  z-index: 3;
+}
+.ped-btn:hover:not(:disabled) {
+  background: #ffd700;
+  box-shadow: 0 0 18px rgba(255, 215, 0, 0.8);
+  transform: scale(1.08);
+}
+.ped-btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+.ped-btn:disabled {
+  background: #555;
+  border-color: #444;
+  color: #888;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ─── Status bar ─────────────────────────────────────────────────────────────── */
+.status-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-label {
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+
+.countdown-ring {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  display: none;
+}
+.countdown-ring.visible {
+  display: block;
+}
+.countdown-ring svg {
+  transform: rotate(-90deg);
+}
+.countdown-ring circle.track {
+  fill: none;
+  stroke: #333;
+  stroke-width: 6;
+}
+.countdown-ring circle.progress {
+  fill: none;
+  stroke: #ff3333;
+  stroke-width: 6;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s linear;
+}
+.countdown-number {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ff6666;
+}
+
+/* ─── State colors for status label ─────────────────────────────────────────── */
+.status-label.green  { color: #00dd44; }
+.status-label.orange { color: #ff8800; }
+.status-label.red    { color: #ff4444; }
+
+/* ─── Legend ─────────────────────────────────────────────────────────────────── */
+.legend {
+  display: flex;
+  gap: 20px;
+  font-size: 0.78rem;
+  color: #888;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}

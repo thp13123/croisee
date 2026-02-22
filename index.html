@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feux de signalisation – Croisée 4 voies</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <h1>Croisée à 4 voies</h1>
+
+  <!--
+    3×3 grid layout (top-down view):
+
+    [NW corner]  [N road]   [NE corner]
+    [W  road  ]  [CENTER]   [E  road  ]
+    [SW corner]  [S road]   [SE corner]
+
+    Each corner contains 2 pedestrian buttons:
+      NW → btn-n-w (north crossing, west side) + btn-w-n (west crossing, north side)
+      NE → btn-n-e (north crossing, east side) + btn-e-n (east crossing, north side)
+      SW → btn-s-w (south crossing, west side) + btn-w-s (west crossing, south side)
+      SE → btn-s-e (south crossing, east side) + btn-e-s (east crossing, south side)
+  -->
+  <div class="intersection" id="intersection">
+
+    <!-- ── ROW 1 ──────────────────────────────────────────────────────────── -->
+
+    <!-- NW corner: buttons for N crossing (west side) + W crossing (north side) -->
+    <div class="corner">
+      <button class="ped-btn" id="btn-n-w" title="Traversée Nord – côté ouest" aria-label="Bouton traversée Nord (côté ouest)">🚶</button>
+      <button class="ped-btn" id="btn-w-n" title="Traversée Ouest – côté nord" aria-label="Bouton traversée Ouest (côté nord)">🚶</button>
+    </div>
+
+    <!-- N road arm -->
+    <div class="road road-n">
+      <!-- Zebra crossing (at the bottom = near intersection) -->
+      <div class="zebra"></div>
+
+      <!-- Traffic light -->
+      <div class="traffic-light" id="light-n">
+        <div class="bulb red"    id="light-n-red"></div>
+        <div class="bulb orange" id="light-n-orange"></div>
+        <div class="bulb green"  id="light-n-green"></div>
+      </div>
+
+      <!-- Pedestrian signal -->
+      <div class="ped-signal" id="ped-n">
+        <div class="ped-icon stop active" id="ped-n-stop">🛑</div>
+        <div class="ped-icon walk"        id="ped-n-walk">🚶</div>
+      </div>
+    </div>
+
+    <!-- NE corner: buttons for N crossing (east side) + E crossing (north side) -->
+    <div class="corner">
+      <button class="ped-btn" id="btn-n-e" title="Traversée Nord – côté est" aria-label="Bouton traversée Nord (côté est)">🚶</button>
+      <button class="ped-btn" id="btn-e-n" title="Traversée Est – côté nord" aria-label="Bouton traversée Est (côté nord)">🚶</button>
+    </div>
+
+    <!-- ── ROW 2 ──────────────────────────────────────────────────────────── -->
+
+    <!-- W road arm -->
+    <div class="road road-w">
+      <div class="zebra"></div>
+
+      <div class="traffic-light" id="light-w">
+        <div class="bulb red"    id="light-w-red"></div>
+        <div class="bulb orange" id="light-w-orange"></div>
+        <div class="bulb green"  id="light-w-green"></div>
+      </div>
+
+      <div class="ped-signal" id="ped-w">
+        <div class="ped-icon stop active" id="ped-w-stop">🛑</div>
+        <div class="ped-icon walk"        id="ped-w-walk">🚶</div>
+      </div>
+    </div>
+
+    <!-- Center of intersection -->
+    <div class="center"></div>
+
+    <!-- E road arm -->
+    <div class="road road-e">
+      <div class="zebra"></div>
+
+      <div class="traffic-light" id="light-e">
+        <div class="bulb red"    id="light-e-red"></div>
+        <div class="bulb orange" id="light-e-orange"></div>
+        <div class="bulb green"  id="light-e-green"></div>
+      </div>
+
+      <div class="ped-signal" id="ped-e">
+        <div class="ped-icon stop active" id="ped-e-stop">🛑</div>
+        <div class="ped-icon walk"        id="ped-e-walk">🚶</div>
+      </div>
+    </div>
+
+    <!-- ── ROW 3 ──────────────────────────────────────────────────────────── -->
+
+    <!-- SW corner: buttons for S crossing (west side) + W crossing (south side) -->
+    <div class="corner">
+      <button class="ped-btn" id="btn-s-w" title="Traversée Sud – côté ouest" aria-label="Bouton traversée Sud (côté ouest)">🚶</button>
+      <button class="ped-btn" id="btn-w-s" title="Traversée Ouest – côté sud" aria-label="Bouton traversée Ouest (côté sud)">🚶</button>
+    </div>
+
+    <!-- S road arm -->
+    <div class="road road-s">
+      <div class="zebra"></div>
+
+      <div class="traffic-light" id="light-s">
+        <div class="bulb red"    id="light-s-red"></div>
+        <div class="bulb orange" id="light-s-orange"></div>
+        <div class="bulb green"  id="light-s-green"></div>
+      </div>
+
+      <div class="ped-signal" id="ped-s">
+        <div class="ped-icon stop active" id="ped-s-stop">🛑</div>
+        <div class="ped-icon walk"        id="ped-s-walk">🚶</div>
+      </div>
+    </div>
+
+    <!-- SE corner: buttons for S crossing (east side) + E crossing (south side) -->
+    <div class="corner">
+      <button class="ped-btn" id="btn-s-e" title="Traversée Sud – côté est" aria-label="Bouton traversée Sud (côté est)">🚶</button>
+      <button class="ped-btn" id="btn-e-s" title="Traversée Est – côté sud" aria-label="Bouton traversée Est (côté sud)">🚶</button>
+    </div>
+
+  </div><!-- /.intersection -->
+
+  <!-- ── Status bar ──────────────────────────────────────────────────────── -->
+  <div class="status-bar">
+    <div class="status-label green" id="status-label">Circulation normale – feux au vert</div>
+
+    <!-- Countdown ring (shown only during RED_WALK phase) -->
+    <div class="countdown-ring" id="countdown-ring">
+      <svg width="80" height="80" viewBox="0 0 80 80">
+        <circle class="track"    cx="40" cy="40" r="34" />
+        <circle class="progress" cx="40" cy="40" r="34"
+          stroke-dasharray="213.6"
+          stroke-dashoffset="0"
+          id="countdown-progress" />
+      </svg>
+      <div class="countdown-number" id="countdown-number">10</div>
+    </div>
+  </div>
+
+  <!-- ── Legend ──────────────────────────────────────────────────────────── -->
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#f0c000"></div>
+      <span>Bouton piéton actif</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#555"></div>
+      <span>Bouton désactivé (cycle en cours)</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#ff3333"></div>
+      <span>Rouge – passage piétons</span>
+    </div>
+  </div>
+
+  <script type="module" src="dist/main.js"></script>
+</body>
+</html>
